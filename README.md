@@ -8,15 +8,14 @@ The goal of the Application is to get push notifications on ones phone whenever 
 saving unnecessary calculation time. Through this app it is possible to save money by only ventilating at distinct times, avoid cold and humid 
 outside air.
 
-Updates will follow:
---------------------------------------------------------------------------
+Updates will follow:--------------------------------------------------------------------------
 Current Progress:
 2025-11-05:
 1.1 First API-Call to OpenWeatherMap. Prints out raw JSON data
+1.2 Handling JSON data to print out the weather/humidity of Stuttgart
 
 -------------------------------------------------------------------------- 
 Future Milestones:
-1.2 Handling JSON data to print out the weather/humidity of Stuttgart
 1.3 Allowing User input to search for a specific city (via Scanner)
 1.4 Creating a basic functional .apk for Android phones.
 [...] 

@@ -1,3 +1,4 @@
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -5,6 +6,8 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 /**
@@ -18,8 +21,41 @@ public class Main{
     public static void main(String[] args) throws IOException, ParseException {
 
         String api_key = System.getenv("OPENWEATHER_KEY");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter city name: ");
+        String userInput = sc.nextLine();
+        userInput = userInput.replace(" ", "+");
 
-        URL url = new URL("https://api.openweathermap.org/data/2.5/weather?lat=48.78&lon=9.177&appid=" + api_key+ "&units=metric");
+        sc.close();
+        //ERSTMAL DIE GEOCODING API************************************************
+        String q = URLEncoder.encode(userInput, StandardCharsets.UTF_8);
+        URL url2 = new URL("https://geocoding-api.open-meteo.com/v1/search?name=" + q + "&count=1&language=en&format=json");
+        HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+        connection2.setRequestMethod("GET");
+        connection2.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+
+        String koordinaten = "";
+        Scanner scanner = new Scanner(connection2.getInputStream());
+        while(scanner.hasNext()){
+            koordinaten += scanner.nextLine();
+        }
+
+        JSONParser jsonParser2 = new JSONParser();
+        //Konvertiert JSON zu JSONObject (Schlüssel/Wert paare)
+        JSONObject json2 = (JSONObject)  jsonParser2.parse(koordinaten);
+        JSONArray results = (JSONArray) json2.get("results");
+        JSONObject firstResult = (JSONObject)  results.get(0);
+
+        double latitude = ((Number) firstResult.get("latitude")).doubleValue();
+        double longitude = ((Number) firstResult.get("longitude")).doubleValue();
+
+        scanner.close();
+
+// GEOCODING API ENDE*************************************************************************
+
+        URL url = new URL("https://api.openweathermap.org/data/2.5/weather?lat="+ latitude + "&lon=" + longitude + "&appid=" + api_key+ "&units=metric");
+
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -29,18 +65,18 @@ public class Main{
         String location = "";
 
         //Speichert den Inhalt in "location"
-        Scanner scanner = new Scanner(connection.getInputStream());
-        while(scanner.hasNext()){
-            location += scanner.nextLine();
-           // System.out.println(scanner.nextLine());
+        Scanner scanner3 = new Scanner(connection.getInputStream());
+        while(scanner3.hasNext()){
+            location += scanner3.nextLine();
+            // System.out.println(scanner.nextLine());
         }
-        scanner.close();
+        scanner3.close();
 
 
         JSONParser jsonParser = new JSONParser();
         //Konvertiert JSON zu JSONObject (Schlüssel/Wert paare)
         JSONObject json = (JSONObject)  jsonParser.parse(location);
-       //"main" ist ein Unter-Objekt des JSON strings -> hier ist die Temperatur etc gespeichert
+        //"main" ist ein Unter-Objekt des JSON strings -> hier ist die Temperatur etc gespeichert
         JSONObject main = (JSONObject) json.get("main");
 
 

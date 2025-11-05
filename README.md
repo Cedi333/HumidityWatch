@@ -13,10 +13,10 @@ Current Progress:
 2025-11-05:
 1.1 First API-Call to OpenWeatherMap. Prints out raw JSON data
 1.2 Handling JSON data to print out the weather/humidity of Stuttgart
+1.3 Allowing User input to search for a specific city (via Scanner)
 
 -------------------------------------------------------------------------- 
 Future Milestones:
-1.3 Allowing User input to search for a specific city (via Scanner)
 1.4 Creating a basic functional .apk for Android phones.
 [...] 
 
